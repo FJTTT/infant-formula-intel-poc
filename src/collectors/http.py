@@ -25,9 +25,12 @@ class HttpClient:
             resp = self.session.get(url, timeout=self.timeout)
             if resp.status_code >= 400:
                 return None
+            if resp.encoding is None or resp.encoding.lower() in {"iso-8859-1", "latin-1"}:
+                resp.encoding = resp.apparent_encoding or "utf-8"
             return resp
         except requests.RequestException:
             return None
+
 
 
 

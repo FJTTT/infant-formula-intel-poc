@@ -5,6 +5,7 @@ import re
 import sqlite3
 
 from src.models import Event
+from src.repair_encoding import mojibake_score, repair_text
 from src.utils import content_hash, parse_date
 
 
@@ -146,9 +147,14 @@ def infer_marketing_intent(event_type: str, text: str) -> str:
 
 
 def summarize(title: str, text: str) -> str:
-    body = re.sub(r"\s+", " ", text).strip()
+    clean_title = repair_text(title) or title
+    body = repair_text(re.sub(r"\s+", " ", text).strip()) or ""
+    if mojibake_score(body) > 0:
+        body = clean_title
     if len(body) > 180:
         body = body[:180] + "..."
-    return f"{title}: {body}" if body and body != title else title
+    return f"{clean_title}: {body}" if body and body != clean_title else clean_title
+
+
 
 
