@@ -1,0 +1,128 @@
+{
+  "period": {
+    "default_from": "2026-01-01",
+    "default_to": "2026-08-31",
+    "context_months": 1
+  },
+  "products": [
+    {
+      "company": "明治",
+      "brand": "ほほえみ",
+      "product": "明治ほほえみ",
+      "age_segment": "0-1",
+      "role": "own",
+      "aliases": ["明治 ほほえみ", "明治ほほえみ", "ほほえみ", "meiji hohoemi"],
+      "official_urls": ["https://www.meiji.co.jp/baby/hohoemi/"]
+    },
+    {
+      "company": "明治",
+      "brand": "ステップ",
+      "product": "明治ステップ",
+      "age_segment": "1-3",
+      "role": "own",
+      "aliases": ["明治 ステップ", "明治ステップ", "ステップミルク", "meiji step"],
+      "official_urls": ["https://www.meiji.co.jp/baby/step/"]
+    },
+    {
+      "company": "森永乳業",
+      "brand": "はぐくみ",
+      "product": "森永はぐくみ",
+      "age_segment": "0-1",
+      "role": "competitor",
+      "aliases": ["森永 はぐくみ", "森永はぐくみ", "はぐくみ", "morinaga hagukumi"],
+      "official_urls": ["https://www.hagukumi.ne.jp/products/hagukumi/"]
+    },
+    {
+      "company": "森永乳業",
+      "brand": "E赤ちゃん",
+      "product": "森永E赤ちゃん",
+      "age_segment": "0-1",
+      "role": "competitor",
+      "aliases": ["森永 E赤ちゃん", "森永E赤ちゃん", "E赤ちゃん", "ペプチドミルク", "morinaga e-akachan"],
+      "official_urls": ["https://www.hagukumi.ne.jp/products/eakachan/"]
+    },
+    {
+      "company": "森永乳業",
+      "brand": "チルミル",
+      "product": "森永チルミル",
+      "age_segment": "1-3",
+      "role": "competitor",
+      "aliases": ["森永 チルミル", "森永チルミル", "チルミル", "morinaga chil-mil"],
+      "official_urls": ["https://www.hagukumi.ne.jp/products/chilmil/"]
+    },
+    {
+      "company": "雪印ビーンスターク",
+      "brand": "すこやかM1",
+      "product": "ビーンスタークすこやかM1",
+      "age_segment": "0-1",
+      "role": "competitor",
+      "aliases": ["雪印ビーンスターク すこやかM1", "ビーンスターク すこやかM1", "すこやかM1", "sukoyaka m1"],
+      "official_urls": ["https://www.beanstalksnow.co.jp/babymilk/sukoyaka/"]
+    },
+    {
+      "company": "雪印ビーンスターク",
+      "brand": "つよいこ",
+      "product": "ビーンスタークつよいこ",
+      "age_segment": "1-3",
+      "role": "competitor",
+      "aliases": ["雪印ビーンスターク つよいこ", "ビーンスターク つよいこ", "つよいこ", "tsuyoiko"],
+      "official_urls": ["https://www.beanstalksnow.co.jp/babymilk/tsuyoiko/"]
+    },
+    {
+      "company": "アサヒグループ食品／和光堂",
+      "brand": "はいはい",
+      "product": "レーベンスミルク はいはい",
+      "age_segment": "0-1",
+      "role": "competitor",
+      "aliases": ["和光堂 はいはい", "レーベンスミルク はいはい", "はいはい ミルク", "wakodo haihai"],
+      "official_urls": ["https://www.wakodo.co.jp/product/babyfood/milk/haihai/"]
+    },
+    {
+      "company": "アサヒグループ食品／和光堂",
+      "brand": "ぐんぐん",
+      "product": "フォローアップミルク ぐんぐん",
+      "age_segment": "1-3",
+      "role": "competitor",
+      "aliases": ["和光堂 ぐんぐん", "フォローアップミルク ぐんぐん", "ぐんぐん ミルク", "wakodo gungun"],
+      "official_urls": ["https://www.wakodo.co.jp/product/babyfood/milk/gungun/"]
+    },
+    {
+      "company": "江崎グリコ",
+      "brand": "アイクレオ バランスミルク",
+      "product": "アイクレオ バランスミルク",
+      "age_segment": "0-1",
+      "role": "competitor",
+      "aliases": ["グリコ アイクレオ", "アイクレオ バランスミルク", "ICREO バランスミルク", "icreo balance milk"],
+      "official_urls": ["https://cp.glico.com/icreo/products/balance/"]
+    },
+    {
+      "company": "江崎グリコ",
+      "brand": "アイクレオ グローアップミルク",
+      "product": "アイクレオ グローアップミルク",
+      "age_segment": "1-3",
+      "role": "competitor",
+      "aliases": ["グリコ アイクレオ グローアップ", "アイクレオ グローアップミルク", "ICREO グローアップミルク", "icreo grow up milk"],
+      "official_urls": ["https://cp.glico.com/icreo/products/growup/"]
+    },
+    {
+      "company": "雪印メグミルク",
+      "brand": "ぴゅあ",
+      "product": "雪印メグミルクぴゅあ",
+      "age_segment": "0-1",
+      "role": "competitor",
+      "aliases": ["雪印 ぴゅあ", "雪印メグミルク ぴゅあ", "ぴゅあ ミルク", "meg milk pure"],
+      "official_urls": ["https://www.meg-snow.com/products/detail.php?p=mother_pure"]
+    },
+    {
+      "company": "雪印メグミルク",
+      "brand": "たっち",
+      "product": "雪印メグミルクたっち",
+      "age_segment": "1-3",
+      "role": "competitor",
+      "aliases": ["雪印 たっち", "雪印メグミルク たっち", "たっち ミルク", "meg milk touch"],
+      "official_urls": ["https://www.meg-snow.com/products/detail.php?p=mother_touch"]
+    }
+  ],
+  "query_terms": ["キャンペーン", "CM", "広告", "PR", "イベント", "サンプリング", "リニューアル", "コラボ", "新商品", "パッケージ", "動画", "ニュース"]
+}
+
