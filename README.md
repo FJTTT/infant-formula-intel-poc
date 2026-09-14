@@ -33,3 +33,13 @@ uv run streamlit run app.py
 - `output/campaigns.csv`
 - `POC_REPORT.md`
 
+
+## Visual/LP情報の追加収集
+
+既存の公式サイトDocumentから、OG画像、バナー候補、ページ内画像、LP候補リンクを追加収集します。
+
+```powershell
+uv run python -m src.visual_backfill
+```
+
+出力には `output/visual_assets.csv` と `outputs/visual_assets.csv` が追加されます。

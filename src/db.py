@@ -44,6 +44,26 @@ def init_db(conn: sqlite3.Connection) -> None:
           metadata_json text default '{}',
           unique(normalized_url, product)
         );
+        create table if not exists visual_assets (
+          id integer primary key autoincrement,
+          document_id integer not null,
+          company text not null,
+          brand text not null,
+          product text not null,
+          age_segment text not null,
+          page_url text not null,
+          asset_url text not null,
+          asset_type text not null,
+          alt_text text,
+          creative_text text,
+          width integer,
+          height integer,
+          is_landing_page_candidate integer not null default 0,
+          confidence real not null default 0.5,
+          collected_at text not null,
+          metadata_json text default '{}',
+          unique(document_id, asset_url, asset_type)
+        );
         create table if not exists duplicate_candidates (
           id integer primary key autoincrement,
           document_id integer not null,
@@ -94,6 +114,43 @@ def init_db(conn: sqlite3.Connection) -> None:
     conn.commit()
 
 
+def sync_visual_assets(conn: sqlite3.Connection, document_id: int, doc: Document) -> None:
+    assets = doc.metadata.get("visual_assets") if isinstance(doc.metadata, dict) else None
+    if not assets:
+        return
+    for asset in assets:
+        asset_url = normalize_url(str(asset.get("asset_url") or asset.get("url") or ""))
+        if not asset_url or asset_url == "https:/":
+            continue
+        conn.execute(
+            """
+            insert or ignore into visual_assets
+            (document_id, company, brand, product, age_segment, page_url, asset_url, asset_type,
+             alt_text, creative_text, width, height, is_landing_page_candidate, confidence, collected_at, metadata_json)
+            values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                document_id,
+                doc.company,
+                doc.brand,
+                doc.product,
+                doc.age_segment,
+                doc.url,
+                asset_url,
+                asset.get("asset_type", "image"),
+                asset.get("alt_text"),
+                asset.get("creative_text"),
+                asset.get("width"),
+                asset.get("height"),
+                1 if asset.get("is_landing_page_candidate") else 0,
+                float(asset.get("confidence", 0.5)),
+                doc.collected_at,
+                json.dumps(asset.get("metadata", {}), ensure_ascii=False),
+            ),
+        )
+    conn.commit()
+
+
 def upsert_document(conn: sqlite3.Connection, doc: Document) -> int:
     doc.normalized_url = normalize_url(doc.url)
     doc.content_hash = content_hash(doc.title, doc.body, doc.snippet)
@@ -102,6 +159,7 @@ def upsert_document(conn: sqlite3.Connection, doc: Document) -> int:
         (doc.normalized_url, doc.product),
     ).fetchone()
     if existing:
+        document_id = int(existing["id"])
         conn.execute(
             """
             update documents
@@ -123,11 +181,12 @@ def upsert_document(conn: sqlite3.Connection, doc: Document) -> int:
                 doc.snippet,
                 doc.content_hash,
                 json.dumps(doc.metadata, ensure_ascii=False),
-                existing["id"],
+                document_id,
             ),
         )
         conn.commit()
-        return int(existing["id"])
+        sync_visual_assets(conn, document_id, doc)
+        return document_id
     cur = conn.execute(
         """
         insert into documents
@@ -155,7 +214,9 @@ def upsert_document(conn: sqlite3.Connection, doc: Document) -> int:
         ),
     )
     conn.commit()
-    return int(cur.lastrowid)
+    document_id = int(cur.lastrowid)
+    sync_visual_assets(conn, document_id, doc)
+    return document_id
 
 
 def insert_event(conn: sqlite3.Connection, event: Event) -> int:
@@ -197,4 +258,3 @@ def insert_event(conn: sqlite3.Connection, event: Event) -> int:
         (event.product, event.event_type, event.event_date, event.summary),
     ).fetchone()
     return int(row["id"]) if row else 0
-

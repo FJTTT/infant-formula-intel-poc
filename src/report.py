@@ -26,9 +26,13 @@ def write_report(conn: sqlite3.Connection, path: Path = REPORT_PATH) -> None:
     events = pd.read_sql_query("select * from events", conn)
     campaigns = pd.read_sql_query("select * from campaigns", conn)
     dupes = pd.read_sql_query("select * from duplicate_candidates", conn)
+    try:
+        visual_assets = pd.read_sql_query("select * from visual_assets", conn)
+    except Exception:
+        visual_assets = pd.DataFrame()
 
     def count_by(df: pd.DataFrame, col: str) -> pd.DataFrame:
-        if df.empty:
+        if df.empty or col not in df:
             return pd.DataFrame(columns=[col, "count"])
         return df.groupby(col).size().reset_index(name="count").sort_values("count", ascending=False)
 
@@ -42,6 +46,7 @@ def write_report(conn: sqlite3.Connection, path: Path = REPORT_PATH) -> None:
         f"- 総Event件数: {len(events)}",
         f"- 総Campaign件数: {len(campaigns)}",
         f"- 重複候補件数: {len(dupes)}",
+        f"- Visual/LP件数: {len(visual_assets)}",
         "",
         "## メーカー別件数",
         _md_table(count_by(docs, "company")),
@@ -55,16 +60,21 @@ def write_report(conn: sqlite3.Connection, path: Path = REPORT_PATH) -> None:
         "## 情報源別件数",
         _md_table(count_by(docs, "source_type")),
         "",
+        "## Visual/LP種別件数",
+        _md_table(count_by(visual_assets, "asset_type")),
+        "",
         "## うまく取得できた情報",
         "- 公式サイト、Google News RSS、DuckDuckGo Lite検索、YouTube検索痕跡をCollectorごとに分離して保存できる構成にした。",
         "- published_at / first_seen_at / collected_at を分けて保持し、再実行時は normalized_url と product でupsertする。",
         "- Document、Event、Campaignを別テーブルにし、Fact JSON と Inference JSON を分けた。",
+        "- 公式サイトからOG画像、ページ内画像、バナー候補、LP候補リンクをVisual/LP情報として抽出できるようにした。",
         "",
         "## 取得できなかった情報・限界",
         "- 検索エンジン結果は環境、地域、検索時点で変動するため、完全な網羅性は保証できない。",
         "- 広告出稿履歴は公開検索だけでは網羅しにくい。Meta/Google広告ライブラリ、CM出稿データ、YouTube Data API等の追加Collectorが必要。",
         "- SNSはログイン、規約、検索API制限の影響が大きく、今回は必須取得対象から外し、公開Webに露出した痕跡のみ扱う。",
         "- YouTubeはAPIキーなしでは検索結果HTML経由のため、公式チャンネル単位の厳密な取得にはYouTube Data API Collectorが必要。",
+        "- Visual/LP情報は画像そのものの保存ではなくURLとメタ情報の保存に留めている。画像の差分検知やOCRには追加実装が必要。",
         "",
         "## 重複の状況",
         f"- URL正規化とタイトル類似で {len(dupes)} 件の重複候補を検出した。PR転載は施策単位でCampaignに寄せて見る前提が妥当。",
@@ -82,10 +92,9 @@ def write_report(conn: sqlite3.Connection, path: Path = REPORT_PATH) -> None:
         "- 広告ライブラリCollector",
         "- 公式ニュースリリースサイトのサイトマップCollector",
         "- SNS公式アカウントの規約準拠API Collector",
+        "- 画像OCR Collector / LPスクリーンショット差分Collector",
         "",
         "## 人間の競合マーケティング把握に対する有用性",
-        "このPoCは、2026年1〜8月の競合マーケティング活動を人間が概観するための一次整理として有用である。特に、商品別・月別・情報源別にDocumentからEvent、Campaignへ粒度を落として確認できるため、記事件数をそのまま活動量と誤解するリスクを下げられる。一方で、広告出稿やSNS起点の話題化は公開Web検索だけでは薄くなるため、意思決定に使うには媒体別APIや手動レビューを組み合わせる必要がある。",
+        "このPoCは、2026年1〜8月の競合マーケティング活動を人間が概観するための一次整理として有用である。特に、商品別・月別・情報源別にDocumentからEvent、Campaignへ粒度を落として確認できるため、記事件数をそのまま活動量と誤解するリスクを下げられる。一方で、広告出稿やSNS起点の話題化は公開Web検索だけでは薄くなるため、意思決定に使うには媒体別APIや手動レビューを組み合わせる必要がある。Visual/LP情報はクリエイティブの入口を見つける用途には役立つが、訴求内容の定量比較には画像OCRとスクリーンショット保存を追加する必要がある。",
     ]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-
-
