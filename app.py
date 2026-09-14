@@ -74,7 +74,7 @@ with tab_timeline:
     show = fe.sort_values(["event_date", "company", "product"], na_position="last")
     st.dataframe(
         show[["event_date", "company", "brand", "product", "age_segment", "event_type", "campaign_name", "summary", "confidence"]],
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )
 
@@ -96,17 +96,17 @@ with tab_events:
             "fact_json",
             "inference_json",
         ]],
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )
 
 with tab_campaigns:
     cols = ["start_date", "end_date", "company", "brand", "product", "campaign_name", "event_count", "document_count", "summary"]
-    st.dataframe(fc[cols], use_container_width=True, hide_index=True)
+    st.dataframe(fc[cols], width="stretch", hide_index=True)
 
 with tab_sources:
     source_cols = ["published_at", "company", "brand", "product", "source_type", "source_name", "title", "url", "snippet"]
-    st.dataframe(fd[source_cols], use_container_width=True, hide_index=True, column_config={"url": st.column_config.LinkColumn("url")})
+    st.dataframe(fd[source_cols], width="stretch", hide_index=True, column_config={"url": st.column_config.LinkColumn("url")})
 
 with tab_month:
     if fe.empty:
@@ -114,5 +114,6 @@ with tab_month:
     else:
         counts = fe.groupby(["month", "product"]).size().reset_index(name="events")
         st.bar_chart(counts, x="month", y="events", color="product")
-        st.dataframe(counts, use_container_width=True, hide_index=True)
+        st.dataframe(counts, width="stretch", hide_index=True)
+
 
